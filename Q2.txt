@@ -1,0 +1,42 @@
+-- QUESTION 2
+
+-- assuming db has been correctly defined and initialized
+function printSmallGuildNames(memberCount)
+    -- set up the SQL query for use
+    local selectGuildQuery = "SELECT name FROM guilds WHERE max_members < %d;"
+    -- format the SQL query beforehand for organization
+    local formattedQuery = string.format(selectGuildQuery, memberCount)
+    
+    -- execute the query and check for errors, important to check for errors for making SQL queries
+    local resultId = db.storeQuery(formattedQuery)
+    if not resultId then
+        -- if the query fails, print error and return
+        print("Error: Failed to execute SQL query.")
+        return
+    end
+    
+    -- fetch guilds from query result and put into table
+    local guilds = {}
+    while db.fetch(resultId) do
+        local guildName = resultId.getString("name")
+        table.insert(guilds, guildName)
+    end
+    
+    --check for the edge case of no guilds fitting criteria
+    if #guilds == 0 then
+        -- if no guilds that fit the criteria were found, print the following
+        print("No guilds found with less than " .. memberCount .. " members.")
+    else
+        print("Guilds with less than " .. memberCount .. " members:")
+        -- print out each guild in the table
+        -- using underscore because it is not used in the for loop, signifies it is not important
+        for _, guild in ipairs(guilds) do
+            print(guild)
+        end
+    end
+    
+    -- important to release the result after finishing with it to deallocate memory
+    -- freeResult may not be the exact function in the database library/framework that is being used
+    -- so it may be different depending on what database library/framework is being used
+    db.freeResult(resultId)
+end

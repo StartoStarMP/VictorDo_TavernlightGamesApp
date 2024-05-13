@@ -1,0 +1,17 @@
+-- QUESTION 1
+
+-- added logoutDelayMS variable to more easily change the delay for releasing player's storage value
+local logoutDelayMS = 1000
+
+local function releaseStorage(player)
+	player:setStorageValue(1000, -1)
+end
+
+function onLogout(player)
+    -- changed the conditional to if player's storage value was not equal to -1 to account for any non -1 values
+    -- can be easily changed back if specific values should be retained
+	if player:getStorageValue(1000) ~= -1 then
+		addEvent(releaseStorage, logoutDelayMS, player)
+	end
+	return true
+end

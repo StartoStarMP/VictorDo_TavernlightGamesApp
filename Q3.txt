@@ -1,0 +1,36 @@
+-- QUESTION 3
+
+--renamed function and parameters with proper naming convention and clear purpose
+function removePlayerFromParty(playerId, memberName)
+    local player = Player(playerId)
+    -- check if player is valid, if not, player with player ID does not exist
+    if not player then
+        print("Invalid player ID.")
+        return
+    end
+    
+    -- find party associated with player
+    local party = player:getParty()
+    -- if party doesn't exist, this means player is not in a party
+    if not party then
+        print("Player is not in a party.")
+        return
+    end
+    
+    -- get party members of party
+    local partyMembers = party:getMembers()
+    -- renamed k to _ because it is not used in the for loop
+    -- also used member instead of v for more descriptive variable name and to improve readability
+    for _, member in pairs(partyMembers) do
+        -- assuming partyMembers contains Player objects, so using memberName to find the corresponding Player
+        if member == Player(memberName) then
+            party:removeMember(Player(memberName))
+            print(memberName .. " has been removed from the party.")
+            -- return to stop looking for member to delete after member has already been found
+            return
+        end
+    end
+    
+    -- print for edge case if member is not in the party
+    print(memberName .. " is not a member of the party.")
+end
